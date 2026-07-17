@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Automatizador de Cartas y Correos</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar de Navegación -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">BN</div>
+        <div class="brand-text">
+          <h2>Caja y Valores</h2>
+          <span>Carta Automator</span>
+        </div>
+      </div>
+      <nav class="nav-menu">
+        <button class="nav-item active" data-target="view-data">
+          <span class="icon">📂</span> Datos y Plantilla
+        </button>
+        <button class="nav-item" data-target="view-email">
+          <span class="icon">✉️</span> Redactor de Correo
+        </button>
+        <button class="nav-item" data-target="view-send">
+          <span class="icon">🚀</span> Enviar con Outlook
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <span>v5.2 Premium Edition</span>
+      </div>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+      
+      <!-- VISTA 1: DATOS Y PLANTILLA -->
+      <section id="view-data" class="tab-view active">
+        <div class="view-header">
+          <h1>📂 Datos de la Campaña y Plantilla Word</h1>
+          <p>Configura la plantilla de Word, carga los datos de Excel o ingrésalos manualmente.</p>
+        </div>
+
+        <div class="control-grid">
+          <!-- Tarjeta 1: Carga de Archivos -->
+          <div class="card">
+            <h3>Archivos de la Carta</h3>
+            <div class="button-group">
+              <button id="btnTemplate" class="btn-primary">1. Cargar Plantilla (.docx)</button>
+              <button id="btnExcel" class="btn-secondary" disabled>2. Cargar Excel (.xlsx)</button>
+              <button id="btnOutput" class="btn-secondary">3. Carpeta de Salida</button>
+            </div>
+            <div class="status-list">
+              <div class="status-item">
+                <span class="status-dot" id="templateDot"></span>
+                <span id="templateStatus">Sin plantilla cargada</span>
+              </div>
+              <div class="status-item">
+                <span class="status-dot" id="outputDot"></span>
+                <span id="outputStatus">Sin carpeta de salida</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tarjeta 2: Acciones Rápidas -->
+          <div class="card">
+            <h3>Gestión de Filas</h3>
+            <div class="button-group">
+              <button id="btnAddRow" class="btn-outline" disabled>+ Agregar Registro</button>
+              <button id="btnGenerate" class="btn-success" disabled>Generar Cartas Word</button>
+            </div>
+            <p class="card-hint">Puedes generar únicamente las cartas Word o proceder directamente al envío de correos adjuntándolas.</p>
+          </div>
+        </div>
+
+        <!-- Panel de Mapeo de Columnas -->
+        <div id="mapping-panel" class="card mapping-card" style="display:none;">
+          <h3>🔎 Mapeo de Columnas (Excel → Campos)</h3>
+          <div id="mappingTable" class="mapping-grid"></div>
+        </div>
+
+        <!-- Tabla de Datos -->
+        <div class="card table-card">
+          <div class="table-header">
+            <h3>Visualizador y Editor de Registros</h3>
+            <span class="badge" id="rowCountBadge">0 Registros</span>
+          </div>
+          <div id="table-wrapper">
+            <table id="dataTable">
+              <thead><tr id="tableHead"></tr></thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+            <div id="emptyHint" class="empty-state">
+              <div class="empty-icon">📝</div>
+              <p>Carga primero una plantilla Word (.docx) para definir los campos variables de la carta.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VISTA 2: REDACTOR DE CORREO -->
+      <section id="view-email" class="tab-view">
+        <div class="view-header">
+          <h1>✉️ Editor Enriquecido de Correo</h1>
+          <p>Escribe el asunto y el cuerpo del correo. Inserta variables haciendo clic en ellas.</p>
+        </div>
+
+        <div class="editor-layout">
+          <!-- Lado Izquierdo: El Editor -->
+          <div class="editor-main card">
+            <div class="composer-field">
+              <label for="emailSubjectInput">Asunto del Correo:</label>
+              <input type="text" id="emailSubjectInput" placeholder="Ej: Carta de Presentación - {empresa}">
+            </div>
+
+            <!-- Barra de Formato -->
+            <div class="editor-toolbar">
+              <button onclick="format('bold')" title="Negrita"><b>B</b></button>
+              <button onclick="format('italic')" title="Cursiva"><i>I</i></button>
+              <button onclick="format('underline')" title="Subrayado"><u>U</u></button>
+              <button onclick="format('insertUnorderedList')" title="Lista viñetas">• Lista</button>
+              <select id="fontSizeSelect" onchange="format('fontSize', this.value)" title="Tamaño de letra">
+                <option value="2">Pequeño</option>
+                <option value="3" selected>Normal</option>
+                <option value="4">Mediano</option>
+                <option value="5">Grande</option>
+                <option value="6">Muy Grande</option>
+              </select>
+              <button onclick="format('removeFormat')" title="Limpiar Formato">✕ Limpiar</button>
+            </div>
+
+            <!-- Cuerpo del Correo (editable) -->
+            <div id="emailBodyEditor" contenteditable="true">
+              <p>Estimados señores,</p>
+              <p>Adjunto a este correo enviamos la carta de presentación correspondiente.</p>
+              <p>Atentamente,</p>
+            </div>
+
+            <div class="editor-actions">
+              <button id="btnSaveTemplate" class="btn-primary">Guardar Cambios de Plantilla</button>
+            </div>
+          </div>
+
+          <!-- Lado Derecho: Variables del Sistema -->
+          <div class="editor-sidebar card">
+            <h3>Variables Disponibles</h3>
+            <p class="sidebar-desc">Haz clic en cualquier variable para insertarla en la posición actual del cursor (del asunto o cuerpo).</p>
+            <div id="variablesContainer" class="variables-list">
+              <!-- Se rellena dinámicamente -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- VISTA 3: ENVÍO CON OUTLOOK -->
+      <section id="view-send" class="tab-view">
+        <div class="view-header">
+          <h1>🚀 Envío y Procesamiento Masivo</h1>
+          <p>Conéctate al Outlook de tu escritorio para generar o enviar los correos a las empresas.</p>
+        </div>
+
+        <div class="send-layout">
+          <div class="card send-controls">
+            <h3>Opciones de Despacho</h3>
+            <div class="radio-group">
+              <label class="radio-label">
+                <input type="radio" name="sendMode" value="draft" checked>
+                <div class="radio-desc">
+                  <strong>📁 Guardar como Borradores</strong>
+                  <span>Genera los correos en la carpeta "Borradores" de Outlook para revisión antes del envío.</span>
+                </div>
+              </label>
+              <label class="radio-label">
+                <input type="radio" name="sendMode" value="send">
+                <div class="radio-desc">
+                  <strong>⚡ Enviar Directamente</strong>
+                  <span>Envía los correos inmediatamente sin guardarlos como borradores.</span>
+                </div>
+              </label>
+            </div>
+
+            <div class="action-bar">
+              <button id="btnStartSend" class="btn-success btn-large" disabled>⚡ Iniciar Envío en Outlook</button>
+            </div>
+          </div>
+
+          <!-- Progreso -->
+          <div class="card progress-card" id="progressCard" style="display:none;">
+            <div class="progress-info">
+              <span id="progressText">Procesando registros...</span>
+              <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar-wrapper">
+              <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <!-- Consola de Logs -->
+          <div class="card console-card">
+            <div class="console-header">
+              <h3>Consola de Ejecución en Tiempo Real</h3>
+              <button id="btnClearConsole" class="btn-outline small">Limpiar</button>
+            </div>
+            <div id="consoleLog" class="console-log">
+              <span class="log-info">[Sistema] Listo. Selecciona datos y plantilla para empezar el procesamiento.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

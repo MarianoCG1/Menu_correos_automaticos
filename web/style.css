@@ -1,0 +1,750 @@
+/* --- Variables de Diseño y Paleta Premium --- */
+:root {
+  --font-primary: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Paleta Corporativa Banco de la Nación & Darks Modernos */
+  --bg-app: #0f172a;          /* Fondo base oscuro general */
+  --bg-sidebar: #1e293b;      /* Sidebar gris oscuro azulado */
+  --bg-main: #f8fafc;         /* Contenido principal gris claro */
+  --bg-card: #ffffff;         /* Tarjetas blanco puro */
+  
+  --primary: #C8102E;         /* Rojo institucional */
+  --primary-hover: #b00e27;
+  --secondary: #64748b;
+  --secondary-hover: #475569;
+  --success: #10b981;
+  --success-hover: #059669;
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --text-light: #f8fafc;
+  
+  --border: #e2e8f0;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+body {
+  font-family: var(--font-primary);
+  background: var(--bg-app);
+  color: var(--text-main);
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* --- Contenedor Principal (Layout) --- */
+.app-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+  width: 260px;
+  background: var(--bg-sidebar);
+  color: var(--text-light);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255,255,255,0.05);
+  flex-shrink: 0;
+}
+
+.brand {
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.brand .logo {
+  background: var(--primary);
+  color: white;
+  font-weight: 700;
+  font-size: 20px;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 12px rgba(200, 16, 46, 0.4);
+}
+
+.brand-text h2 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.brand-text span {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.nav-menu {
+  flex-grow: 1;
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-family: var(--font-primary);
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.nav-item:hover {
+  background: rgba(255,255,255,0.03);
+  color: var(--text-light);
+}
+
+.nav-item.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(200, 16, 46, 0.35);
+}
+
+.nav-item .icon {
+  font-size: 16px;
+}
+
+.sidebar-footer {
+  padding: 16px 24px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  font-size: 11px;
+  color: #64748b;
+  text-align: center;
+}
+
+/* --- Contenido Principal --- */
+.main-content {
+  flex-grow: 1;
+  background: var(--bg-main);
+  padding: 32px;
+  overflow-y: auto;
+}
+
+/* --- Vistas y Pestañas --- */
+.tab-view {
+  display: none;
+  animation: fadeIn 0.35s ease;
+}
+
+.tab-view.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.view-header {
+  margin-bottom: 28px;
+}
+
+.view-header h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.view-header p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* --- Tarjetas (Cards) --- */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
+}
+
+.card h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 12px;
+}
+
+/* --- Botones --- */
+button {
+  font-family: var(--font-primary);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-primary, .btn-secondary, .btn-success, .btn-outline {
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+.btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+
+.btn-secondary {
+  background: var(--secondary);
+  color: white;
+}
+.btn-secondary:hover:not(:disabled) { background: var(--secondary-hover); }
+
+.btn-success {
+  background: var(--success);
+  color: white;
+}
+.btn-success:hover:not(:disabled) { background: var(--success-hover); }
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border);
+}
+.btn-outline:hover:not(:disabled) {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+}
+
+.btn-large {
+  padding: 14px 28px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* --- Grid de Control --- */
+.control-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+/* --- Indicador de Estados en Archivos --- */
+.status-list {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text-main);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  display: inline-block;
+}
+
+.status-dot.active {
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+}
+
+/* --- Mapeo de Columnas (Excel) --- */
+.mapping-card {
+  border-left: 4px solid var(--primary);
+}
+
+.mapping-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.mapping-row {
+  background: #f8fafc;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mapping-row span:first-child {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-main);
+}
+
+.mapping-row span:last-child {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.mapping-row.unmapped {
+  border-color: #fca5a5;
+  background: #fef2f2;
+}
+
+.mapping-row.unmapped span:last-child {
+  color: var(--danger);
+  font-weight: 500;
+}
+
+/* --- Contenedor de Tabla --- */
+.table-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.table-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.table-header h3 {
+  margin: 0;
+}
+
+.badge {
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+}
+
+#table-wrapper {
+  overflow-x: auto;
+  max-height: 400px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+
+th {
+  background: #f8fafc;
+  color: var(--text-muted);
+  font-weight: 600;
+  padding: 12px 16px;
+  border-bottom: 2px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-main);
+}
+
+tr:hover td {
+  background: #f8fafc;
+}
+
+td[contenteditable="true"]:focus {
+  outline: 2px solid var(--primary);
+  background: #fff;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.1);
+}
+
+/* Acciones en Tabla */
+.danger-small {
+  padding: 4px 8px;
+  font-size: 11px;
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.danger-small:hover {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+select.status-select {
+  font-family: var(--font-primary);
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: white;
+  cursor: pointer;
+}
+
+/* Estado de Tabla Vacía */
+.empty-state {
+  padding: 48px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.empty-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+/* --- Vista 2: Redactor de Correo (Layout) --- */
+.editor-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.editor-main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.composer-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.composer-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.composer-field input {
+  font-family: var(--font-primary);
+  font-size: 14px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  background: #f8fafc;
+}
+
+.composer-field input:focus {
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.10);
+}
+
+/* Barra de Formato (Editor) */
+.editor-toolbar {
+  display: flex;
+  gap: 6px;
+  background: #f8fafc;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.editor-toolbar button {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.editor-toolbar button:hover {
+  background: #f1f5f9;
+}
+
+.editor-toolbar select {
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  font-family: var(--font-primary);
+}
+
+/* Editor de Texto */
+#emailBodyEditor {
+  min-height: 250px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  outline: none;
+  overflow-y: auto;
+  font-family: Calibri, sans-serif;
+  font-size: 11pt;
+  line-height: 1.5;
+}
+
+#emailBodyEditor:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(200, 16, 46, 0.10);
+}
+
+/* Lado Derecho: Sidebar de Variables */
+.editor-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  background: white;
+}
+
+.sidebar-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.variables-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.var-pill {
+  padding: 8px 12px;
+  background: #f1f5f9;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.var-pill:hover {
+  background: #e2e8f0;
+  color: var(--primary);
+  border-color: #cbd5e1;
+}
+
+.var-pill::after {
+  content: "+";
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+/* --- Vista 3: Envíos y Outlook (Layout) --- */
+.send-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.radio-label {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.radio-label:hover {
+  background: #f8fafc;
+}
+
+.radio-label input[type="radio"] {
+  accent-color: var(--primary);
+  margin-top: 4px;
+}
+
+.radio-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.radio-desc strong {
+  font-size: 14px;
+  color: var(--text-main);
+}
+
+.radio-desc span {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* --- Barra de Progreso --- */
+.progress-card {
+  border-left: 4px solid var(--success);
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.progress-bar-wrapper {
+  background: #e2e8f0;
+  height: 10px;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  background: var(--success);
+  height: 100%;
+  width: 0%;
+  border-radius: 99px;
+  transition: width 0.3s ease;
+}
+
+/* --- Consola de Log --- */
+.console-card {
+  padding: 0;
+  background: #0f172a;
+  color: #e2e8f0;
+  border-color: #1e293b;
+  overflow: hidden;
+}
+
+.console-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid #1e293b;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.console-header h3 {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 13px;
+  font-family: var(--font-primary);
+}
+
+.console-log {
+  padding: 20px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  max-height: 250px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Colores de Consola */
+.log-info { color: #94a3b8; }
+.log-success { color: #34d399; }
+.log-warning { color: #fbbf24; }
+.log-error { color: #f87171; }
+
+/* --- Mensajes Toast --- */
+#toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #1e293b;
+  color: white;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: var(--shadow-lg);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  z-index: 999;
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#toast.show.error {
+  background: var(--danger);
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
+}
+
+#toast.show.success {
+  background: var(--success);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+}

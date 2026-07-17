@@ -1,0 +1,500 @@
+{
+  "template_path": "C:\\Users\\mcg22\\Downloads\\Modelo Carta Cargo Recuperado.docx",
+  "fields": [
+    "STD",
+    "CLIENTE",
+    "DIRECCION",
+    "DEPARTAMENTO_",
+    "PROVINCIA",
+    "DISTRITO",
+    "CUENTA",
+    "AB_DUPLICADO",
+    "destinatario_correo",
+    "copia_correo"
+  ],
+  "excel_path": "C:\\Users\\mcg22\\Downloads\\Solicitud de datos.xlsx",
+  "excel_mapping": {
+    "STD": null,
+    "CLIENTE": "Razón Social",
+    "DIRECCION": "Domicilio",
+    "DEPARTAMENTO_": "DEPARTAMENTO",
+    "PROVINCIA": "PROVINCIA",
+    "DISTRITO": "DISTRITO",
+    "CUENTA": "Número de Cuenta",
+    "AB_DUPLICADO": null,
+    "destinatario_correo": "Dirección de correo",
+    "copia_correo": "Dirección de correo"
+  },
+  "output_folder": null,
+  "rows": [
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "PUGA HUARCAYA NAYDA",
+        "DIRECCION": "CL MZ C2 NUEVO PACHACUTEC SECT CGRC2 2 CUADRAS PARADERO RENIEC  GRC2 B",
+        "DEPARTAMENTO_": "PROV.CONSTITUCIONAL",
+        "PROVINCIA": "PROV. CONST.CALLAO",
+        "DISTRITO": "VENTANILLA",
+        "CUENTA": "4082227720",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "NAYDAPUGAHUARCAYA@GMAIL.COM",
+        "copia_correo": "NAYDAPUGAHUARCAYA@GMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "AVIMAR GAS E.I.R.L.",
+        "DIRECCION": "CL TAMBO BLANCO 2500",
+        "DEPARTAMENTO_": "LIMA",
+        "PROVINCIA": "HUAURA",
+        "DISTRITO": "SANTA MARIA",
+        "CUENTA": "4321244888",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "  ANTONIOAVILAM12@HOTMAIL.COM",
+        "copia_correo": "  ANTONIOAVILAM12@HOTMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "MORALES PORTILLA PEDRO CESAR",
+        "DIRECCION": "CL VICTOR RAUL HAYA DE LA TORRE 143       PISO 1 DPTO 1",
+        "DEPARTAMENTO_": "LIMA",
+        "PROVINCIA": "BARRANCA",
+        "DISTRITO": "BARRANCA",
+        "CUENTA": "4331205309",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "PERMORALES20@GMAIL.COM",
+        "copia_correo": "PERMORALES20@GMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "ASTUHUAMAN BRICENO REMIGIO SEVERO",
+        "DIRECCION": "CL SANTA ANA 0 BLQ. 0 MZ D7 LT 10 PISO 0 DPTO 0",
+        "DEPARTAMENTO_": "LIMA",
+        "PROVINCIA": "LIMA",
+        "DISTRITO": "SANTA ANITA",
+        "CUENTA": "4056022258",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "EASTUHUAMAN@GMAIL.COM",
+        "copia_correo": "EASTUHUAMAN@GMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "TOCAS HUACCHA JHON RAY",
+        "DIRECCION": "CL ESPANA 240       PISO 01",
+        "DEPARTAMENTO_": "LIMA",
+        "PROVINCIA": "LIMA",
+        "DISTRITO": "LIMA",
+        "CUENTA": "4783316442",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "JHON1992PISCIS@GMAIL.COM",
+        "copia_correo": "JHON1992PISCIS@GMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "CHADIGAS SAC",
+        "DIRECCION": "CL PANAMERICANA NORTE 962",
+        "DEPARTAMENTO_": "LAMBAYEQUE",
+        "PROVINCIA": "LAMBAYEQUE",
+        "DISTRITO": "ILLIMO",
+        "CUENTA": "4137694161",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "",
+        "copia_correo": ""
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "LLAMOCTANTA MALUQUISH NILSON YOMAR",
+        "DIRECCION": "CL EL TAMBO S/N",
+        "DEPARTAMENTO_": "CAJAMARCA",
+        "PROVINCIA": "HUALGAYOC",
+        "DISTRITO": "BAMBAMARCA",
+        "CUENTA": "4140661592",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "NILSON.LEO26@GMAIL.COM",
+        "copia_correo": "NILSON.LEO26@GMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "MULTIVENTAS Y DISTRIBUIDORA DE GAS A & F E.I.R.L",
+        "DIRECCION": "CL SALOMON VILCHEZ MURGA S/N",
+        "DEPARTAMENTO_": "",
+        "PROVINCIA": "",
+        "DISTRITO": "",
+        "CUENTA": "4143862807",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "  CASTILLOESTHER472@GMAIL.COM",
+        "copia_correo": "  CASTILLOESTHER472@GMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "PAREDES TAFUR DONATO",
+        "DIRECCION": "CL RICARDO PALMA 394",
+        "DEPARTAMENTO_": "CAJAMARCA",
+        "PROVINCIA": "HUALGAYOC",
+        "DISTRITO": "BAMBAMARCA",
+        "CUENTA": "4150685732",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "TONYPAZ221@HOTMAIL.COM",
+        "copia_correo": "TONYPAZ221@HOTMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "TORRES SAAVEDRA JOSE ANTONIO",
+        "DIRECCION": "CL SIMON BOLIVAR 1537",
+        "DEPARTAMENTO_": "LAMBAYEQUE",
+        "PROVINCIA": "CHICLAYO",
+        "DISTRITO": "CHONGOYAPE",
+        "CUENTA": "4232040284",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "JATS32@HOTMAIL.COM",
+        "copia_correo": "JATS32@HOTMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "CUMPA QUESQUEN AMADOR AUGUSTO",
+        "DIRECCION": "CL GRAU 324   MZ M LT 16 PISO 1 DPTO 1",
+        "DEPARTAMENTO_": "LAMBAYEQUE",
+        "PROVINCIA": "CHICLAYO",
+        "DISTRITO": "ETEN",
+        "CUENTA": "4233025971",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "CAMINO2010@HOTMAIL.COM",
+        "copia_correo": "CAMINO2010@HOTMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "PARRAGUEZ CAPITAN OSWALDO ALBERTO",
+        "DIRECCION": "CL CASIMIRO CHUMAN 755 BLQ. S/N MZ S/N LT S/N PISO S/N DPTO S/N",
+        "DEPARTAMENTO_": "LAMBAYEQUE",
+        "PROVINCIA": "FERRENAFE",
+        "DISTRITO": "PUEBLO NUEVO",
+        "CUENTA": "4234192944",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "MILAGRITOS1509@HOTMAIL.COM",
+        "copia_correo": "MILAGRITOS1509@HOTMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "TORRES GIL JEREMIAS",
+        "DIRECCION": "CL RAMON CASTILLA 40 BLQ. 0 MZ 0 LT 000 PISO 000 DPTO 000",
+        "DEPARTAMENTO_": "CAJAMARCA",
+        "PROVINCIA": "SAN MIGUEL",
+        "DISTRITO": "LA FLORIDA",
+        "CUENTA": "4235155228",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "jemiastorresgil@gmail.com",
+        "copia_correo": "jemiastorresgil@gmail.com"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "MILLONES DE SILVA TERESA DEL ROSARIO",
+        "DIRECCION": "CL MIGUEL GRAU 297",
+        "DEPARTAMENTO_": "LAMBAYEQUE",
+        "PROVINCIA": "CHICLAYO",
+        "DISTRITO": "ETEN",
+        "CUENTA": "4239016486",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "TEMITO34@HOTMAIL.COM",
+        "copia_correo": "TEMITO34@HOTMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "OLIVOS INCIO JUAN MARIO",
+        "DIRECCION": "CL NUEVO REQUE 11   MZ A LT 11",
+        "DEPARTAMENTO_": "LAMBAYEQUE",
+        "PROVINCIA": "CHICLAYO",
+        "DISTRITO": "REQUE",
+        "CUENTA": "4240050434",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "OLEY0312@GMAIL.COM",
+        "copia_correo": "OLEY0312@GMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "RODRIGUEZ QUISPE MARIA ESTHER",
+        "DIRECCION": "CL REAL 709",
+        "DEPARTAMENTO_": "LAMBAYEQUE",
+        "PROVINCIA": "CHICLAYO",
+        "DISTRITO": "SANA",
+        "CUENTA": "4241134968",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "LUISPIZARRO1009@GMAIL.COM",
+        "copia_correo": "LUISPIZARRO1009@GMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "MONTALVO DE LA TORRE NADINE CECILIA DEL CARMEN",
+        "DIRECCION": "CL TACNA 670",
+        "DEPARTAMENTO_": "LAMBAYEQUE",
+        "PROVINCIA": "CHICLAYO",
+        "DISTRITO": "CHICLAYO",
+        "CUENTA": "4242055859",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "Nmontalvodelatorre@hotmail.com",
+        "copia_correo": "Nmontalvodelatorre@hotmail.com"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "SUAREZ VILLARREAL MARIA ANGELICA",
+        "DIRECCION": "CL MANCO CAPAC 1012",
+        "DEPARTAMENTO_": "CAJAMARCA",
+        "PROVINCIA": "SANTA CRUZ",
+        "DISTRITO": "SANTA CRUZ",
+        "CUENTA": "4244038382",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "SUAREZVILLARREALANGELICA@GMAIL.COM",
+        "copia_correo": "SUAREZVILLARREALANGELICA@GMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "NAVARRETE SANJINEZ LISBETH LILIANA",
+        "DIRECCION": "CL SANTA INES 546 BLQ. 0 MZ 0 LT 0 PISO 0 DPTO 0",
+        "DEPARTAMENTO_": "LAMBAYEQUE",
+        "PROVINCIA": "CHICLAYO",
+        "DISTRITO": "CHICLAYO",
+        "CUENTA": "4250928993",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "INMUNOCAL.GLUTATION2@GMAIL.COM",
+        "copia_correo": "INMUNOCAL.GLUTATION2@GMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "CIEZA DIAZ JUSTINIANO",
+        "DIRECCION": "CL EZEQUIEL MONTOYA 372",
+        "DEPARTAMENTO_": "CAJAMARCA",
+        "PROVINCIA": "CHOTA",
+        "DISTRITO": "CHOTA",
+        "CUENTA": "4271793265",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "YUSTYCIEZA81@GMAIL.COM",
+        "copia_correo": "YUSTYCIEZA81@GMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "CHAVEZ TIRADO ELSA NOEMI",
+        "DIRECCION": "CL SANTA ANITA 230 BLQ. 0 MZ 0 LT 0 PISO 0 DPTO 0",
+        "DEPARTAMENTO_": "CAJAMARCA",
+        "PROVINCIA": "CAJAMARCA",
+        "DISTRITO": "CAJAMARCA",
+        "CUENTA": "4272461967",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "ELSA.CH5@HOTMAIL.COM",
+        "copia_correo": "ELSA.CH5@HOTMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "DAVILA MEJIA NILSON IVAN",
+        "DIRECCION": "CL MIRAFLORES 600",
+        "DEPARTAMENTO_": "CAJAMARCA",
+        "PROVINCIA": "CUTERVO",
+        "DISTRITO": "CUTERVO",
+        "CUENTA": "4274003559",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "NILSON9225@GMAIL.COM",
+        "copia_correo": "NILSON9225@GMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "BOCANEGRA TERRONES AUGUSTO",
+        "DIRECCION": "CL SOCOTA S/N",
+        "DEPARTAMENTO_": "CAJAMARCA",
+        "PROVINCIA": "CUTERVO",
+        "DISTRITO": "SANTO TOMAS",
+        "CUENTA": "4274053165",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "BOCANEGRATERRONESA@GMAIL.COM",
+        "copia_correo": "BOCANEGRATERRONESA@GMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "HORNA LLANOS ROYER EMILSER",
+        "DIRECCION": "CL BARRIO CARNICHE SN",
+        "DEPARTAMENTO_": "CAJAMARCA",
+        "PROVINCIA": "CUTERVO",
+        "DISTRITO": "CUTERVO",
+        "CUENTA": "4274830587",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "royerhl@outlook.com",
+        "copia_correo": "royerhl@outlook.com"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "DISTRIBUIDORA MIYAFI SAC",
+        "DIRECCION": "CL COMERCIO SN.",
+        "DEPARTAMENTO_": "CAJAMARCA",
+        "PROVINCIA": "CHOTA",
+        "DISTRITO": "QUEROCOTO",
+        "CUENTA": "4279064246",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "  KETTYSONNIA.1970@GAMIL.COM",
+        "copia_correo": "  KETTYSONNIA.1970@GAMIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "CASTANEDA RAMOS ANGELA MARIA",
+        "DIRECCION": "CL BARRIOS ALTOS S.N BLQ. 0 MZ 0 LT 0 PISO 0 DPTO 0",
+        "DEPARTAMENTO_": "CAJAMARCA",
+        "PROVINCIA": "CUTERVO",
+        "DISTRITO": "CALLAYUC",
+        "CUENTA": "4291050714",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "JHOAN_82312@HOTMAIL.COM",
+        "copia_correo": "JHOAN_82312@HOTMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "LEON SAMAME CARLOS ORLANDO",
+        "DIRECCION": "CL MIGUEL GRAU 893 BLQ. 0 MZ 0 LT 0 PISO 0 DPTO 0",
+        "DEPARTAMENTO_": "LAMBAYEQUE",
+        "PROVINCIA": "LAMBAYEQUE",
+        "DISTRITO": "JAYANCA",
+        "CUENTA": "4302489780",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "LEONSAMAMECARLOSORLANDO@GMAIL.",
+        "copia_correo": "LEONSAMAMECARLOSORLANDO@GMAIL."
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "WONG FALLA CESAR AUGUSTO",
+        "DIRECCION": "CL VICTORIA 497 BLQ. 111 MZ 1",
+        "DEPARTAMENTO_": "LAMBAYEQUE",
+        "PROVINCIA": "LAMBAYEQUE",
+        "DISTRITO": "MOTUPE",
+        "CUENTA": "4305260806",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "WONGFALLAAUGUSTO@GMAIL.COM",
+        "copia_correo": "WONGFALLAAUGUSTO@GMAIL.COM"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "MONTALVAN FLORES MANUEL OSWALDO",
+        "DIRECCION": "CL CAMPINA ZAPOTAL 00000 BLQ. 000",
+        "DEPARTAMENTO_": "LAMBAYEQUE",
+        "PROVINCIA": "LAMBAYEQUE",
+        "DISTRITO": "TUCUME",
+        "CUENTA": "4309062545",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "oswaldomontalvan712@gmail.com",
+        "copia_correo": "oswaldomontalvan712@gmail.com"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "SANTAMARIA ALAMO ELVIS JOSE",
+        "DIRECCION": "CL LA PINTADA 00033",
+        "DEPARTAMENTO_": "LAMBAYEQUE",
+        "PROVINCIA": "LAMBAYEQUE",
+        "DISTRITO": "TUCUME",
+        "CUENTA": "4309112313",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "elvissantamariaalamo77@gmail.com",
+        "copia_correo": "elvissantamariaalamo77@gmail.com"
+      },
+      "status": "Pendiente"
+    },
+    {
+      "data": {
+        "STD": "",
+        "CLIENTE": "CAXAMARCA GAS S.A.",
+        "DIRECCION": "CL DON DIEGO DE D¡A 228 BLQ. 0 MZ 0 LT 0 PISO 0 DPTO 0",
+        "DEPARTAMENTO_": "LIMA",
+        "PROVINCIA": "LIMA",
+        "DISTRITO": "SANTIAGO DE SURCO",
+        "CUENTA": "4774109302",
+        "AB_DUPLICADO": "",
+        "destinatario_correo": "",
+        "copia_correo": ""
+      },
+      "status": "Pendiente"
+    }
+  ],
+  "email_subject_template": "Carta para {empresa}",
+  "email_body_template": "<p>Estimados,</p><p>Adjunto la carta de presentación correspondiente.</p><p>Atentamente,</p>",
+  "email_recipient_field": null,
+  "email_cc_field": null
+}
