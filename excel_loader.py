@@ -76,6 +76,7 @@ def auto_map_columns(excel_columns, template_fields):
         "destinatario_correo": ["direccion_de_correo", "correo", "email", "mail", "correo_destinatario", "direccion_de_correo_electronico"],
         "copia_correo": ["cc", "copia", "con_copia"],
         "celular": ["numero_de_celular", "nro_celular", "telefono", "celular"],
+        "n_carta": ["n_carta", "numero_carta", "correlativo", "numero_de_carta", "carta", "n_de_carta", "nro_carta", "num_carta"],
     }
 
     mapping = {}

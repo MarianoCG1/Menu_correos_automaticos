@@ -317,13 +317,21 @@ class Api:
             data = row.get("data", {})
             
             # 1. Determinar el nombre base del archivo de salida
-            base_name = None
-            for candidate_key in ("empresa", "nombre_empresa", "compania", "cliente"):
+            cliente_name = None
+            for candidate_key in ("empresa", "nombre_empresa", "compania", "cliente", "razon_social"):
                 if candidate_key in data and data[candidate_key]:
-                    base_name = str(data[candidate_key])
+                    cliente_name = str(data[candidate_key])
                     break
-            if not base_name:
-                base_name = f"registro_{i + 1}"
+            if not cliente_name:
+                cliente_name = f"registro_{i + 1}"
+
+            carta_num = ""
+            for candidate_key in ("n_carta", "numero_carta", "correlativo"):
+                if candidate_key in data and data[candidate_key]:
+                    carta_num = str(data[candidate_key]) + "_"
+                    break
+
+            base_name = f"{carta_num}{cliente_name}"
 
             safe_name = "".join(
                 c if c.isalnum() or c in " _-" else "_" for c in base_name
