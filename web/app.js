@@ -96,6 +96,7 @@ async function refreshFromState(newState) {
   renderMappingPanel();
   renderEmailTemplate();
   renderVariables();
+  renderAddressBook();
 
   const hasFields = state.fields && state.fields.length > 0;
   document.getElementById("btnExcel").disabled = !hasFields;
@@ -275,8 +276,95 @@ function renderVariables() {
   });
 }
 
+// --- Renderizar Agenda de Contactos ---
+function renderAddressBook() {
+  const container = document.getElementById("addressBookContainer");
+  container.innerHTML = "";
+  const book = state.address_book || [];
+  
+  if (book.length === 0) {
+    container.innerHTML = '<li style="font-size:12px; color:var(--text-muted);">Sin contactos aún.</li>';
+    return;
+  }
+  
+  book.forEach(email => {
+    const li = document.createElement("li");
+    li.style.display = "flex";
+    li.style.justifyContent = "space-between";
+    li.style.alignItems = "center";
+    li.style.padding = "4px 8px";
+    li.style.background = "#f1f5f9";
+    li.style.borderRadius = "4px";
+    
+    const emailSpan = document.createElement("span");
+    emailSpan.textContent = email;
+    emailSpan.style.fontSize = "12px";
+    emailSpan.style.fontWeight = "500";
+    emailSpan.style.overflow = "hidden";
+    emailSpan.style.textOverflow = "ellipsis";
+    emailSpan.style.maxWidth = "110px";
+    emailSpan.title = email;
+    
+    const actions = document.createElement("div");
+    actions.style.display = "flex";
+    actions.style.gap = "4px";
+    
+    const btnTo = document.createElement("button");
+    btnTo.textContent = "Para";
+    btnTo.className = "btn-small";
+    btnTo.style.fontSize = "10px";
+    btnTo.style.padding = "2px 4px";
+    btnTo.onclick = () => {
+      const input = document.getElementById("emailToInput");
+      input.value = input.value ? input.value + "; " + email : email;
+      toast("Agregado a Para.");
+    };
+    
+    const btnCc = document.createElement("button");
+    btnCc.textContent = "CC";
+    btnCc.className = "btn-small";
+    btnCc.style.fontSize = "10px";
+    btnCc.style.padding = "2px 4px";
+    btnCc.onclick = () => {
+      const input = document.getElementById("emailCcInput");
+      input.value = input.value ? input.value + "; " + email : email;
+      toast("Agregado a CC.");
+    };
+    
+    const btnDel = document.createElement("button");
+    btnDel.textContent = "✕";
+    btnDel.className = "danger-small";
+    btnDel.style.fontSize = "10px";
+    btnDel.style.padding = "2px 4px";
+    btnDel.onclick = async () => {
+      const res = await api().remove_contact(email);
+      if (res.ok) await refreshFromState(res.state);
+    };
+    
+    actions.appendChild(btnTo);
+    actions.appendChild(btnCc);
+    actions.appendChild(btnDel);
+    
+    li.appendChild(emailSpan);
+    li.appendChild(actions);
+    container.appendChild(li);
+  });
+}
+
 // --- Enlazar Botones y Eventos ---
 function wireButtons() {
+  document.getElementById("btnAddContact").addEventListener("click", async () => {
+    const input = document.getElementById("newContactInput");
+    const email = input.value.trim();
+    if (!email) return;
+    const res = await api().add_contact(email);
+    if (res.ok) {
+      input.value = "";
+      toast("Contacto guardado.");
+      await refreshFromState(res.state);
+    }
+  });
+
   // Cargar Plantilla Word
   document.getElementById("btnTemplate").addEventListener("click", async () => {
     logToConsole("Iniciando selección de plantilla Word...");
@@ -328,6 +416,13 @@ function wireButtons() {
     logToConsole("Iniciando generación de cartas Word (.docx)...");
     document.getElementById("btnGenerate").disabled = true;
     
+    // Auto-guardar campos antes de procesar
+    const toVal = document.getElementById("emailToInput").value;
+    const ccVal = document.getElementById("emailCcInput").value;
+    const subject = document.getElementById("emailSubjectInput").value;
+    const body = document.getElementById("emailBodyEditor").innerHTML;
+    await api().save_email_template(subject, body, toVal, ccVal);
+    
     try {
       const res = await api().generate_letters();
       if (res.ok) {
@@ -371,9 +466,11 @@ function wireButtons() {
     const isDirectSend = (sendMode === "send");
     
     // Primero, guardar la plantilla actual para estar seguros
+    const toVal = document.getElementById("emailToInput").value;
+    const ccVal = document.getElementById("emailCcInput").value;
     const subject = document.getElementById("emailSubjectInput").value;
     const body = document.getElementById("emailBodyEditor").innerHTML;
-    await api().save_email_template(subject, body);
+    await api().save_email_template(subject, body, toVal, ccVal);
 
     logToConsole(`Iniciando conexión con Outlook (Modo: ${isDirectSend ? "Envío directo" : "Crear borradores"})...`);
     

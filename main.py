@@ -300,14 +300,16 @@ class Api:
         except Exception:
             pass
 
+        word_app = None
         try:
             outlook = win32com.client.Dispatch("Outlook.Application")
+            word_app = win32com.client.Dispatch("Word.Application")
         except Exception as e:
             if com_initialized:
                 pythoncom.CoUninitialize()
             return {
                 "ok": False,
-                "error": f"No se pudo conectar a Outlook. Asegúrate de que Outlook esté abierto. Error: {e}"
+                "error": f"No se pudo conectar a Outlook o Word. Asegúrate de que estén abiertos/instalados. Error: {e}"
             }
 
         processed = 0
@@ -323,6 +325,15 @@ class Api:
 
         for i, row in enumerate(rows):
             data = row.get("data", {})
+            
+            # --- Formatear Número de Cuenta ---
+            for key in list(data.keys()):
+                if "cuenta" in key.lower():
+                    acc = str(data[key]).replace("-", "").replace(" ", "").strip()
+                    if len(acc) == 10 and acc.isdigit():
+                        data[key] = f"0{acc[0]}-{acc[1:4]}-{acc[4:]}"
+                    elif len(acc) == 11 and acc.startswith("0") and acc.isdigit():
+                        data[key] = f"0{acc[1]}-{acc[2:5]}-{acc[5:]}"
             
             # 1. Determinar el nombre base del archivo de salida
             cliente_name = None
@@ -388,16 +399,33 @@ class Api:
                 if cc.strip():
                     mail.CC = cc.strip()
 
-                # Adjuntar la carta Word usando el nombre oficial fijo
-                temp_attach_path = os.path.join(temp_dir, f"{official_letter_name}.docx")
-                shutil.copy2(output_path, temp_attach_path)
-                mail.Attachments.Add(os.path.abspath(temp_attach_path))
+                # Adjuntar archivo como PDF si es posible
+                temp_pdf_path = os.path.join(temp_dir, f"{official_letter_name}.pdf")
+                pdf_success = False
+                if word_app:
+                    try:
+                        doc_for_pdf = word_app.Documents.Open(os.path.abspath(output_path))
+                        doc_for_pdf.SaveAs(os.path.abspath(temp_pdf_path), FileFormat=17) # 17 = wdFormatPDF
+                        doc_for_pdf.Close()
+                        pdf_success = True
+                    except Exception:
+                        pass
                 
-                # Opcional: borrar el temporal después de adjuntar
-                try:
-                    os.remove(temp_attach_path)
-                except Exception:
-                    pass
+                if pdf_success:
+                    mail.Attachments.Add(os.path.abspath(temp_pdf_path))
+                    try:
+                        os.remove(temp_pdf_path)
+                    except Exception:
+                        pass
+                else:
+                    # Fallback a Word (.docx) si la conversión a PDF falla
+                    temp_attach_path = os.path.join(temp_dir, f"{official_letter_name}.docx")
+                    shutil.copy2(output_path, temp_attach_path)
+                    mail.Attachments.Add(os.path.abspath(temp_attach_path))
+                    try:
+                        os.remove(temp_attach_path)
+                    except Exception:
+                        pass
 
                 if send_directly:
                     mail.Send()
@@ -413,6 +441,12 @@ class Api:
         # Guardar el estado actualizado de las filas
         self.storage.update({"rows": rows})
 
+        if word_app:
+            try:
+                word_app.Quit()
+            except Exception:
+                pass
+
         if com_initialized:
             try:
                 pythoncom.CoUninitialize()
@@ -425,6 +459,21 @@ class Api:
             "errors": errors,
             "state": self.storage.get()
         }
+    def add_contact(self, email):
+        state = self.storage.get()
+        book = state.get("address_book", [])
+        if email and email not in book:
+            book.append(email)
+            self.storage.update({"address_book": book})
+        return {"ok": True, "state": self.storage.get()}
+
+    def remove_contact(self, email):
+        state = self.storage.get()
+        book = state.get("address_book", [])
+        if email in book:
+            book.remove(email)
+            self.storage.update({"address_book": book})
+        return {"ok": True, "state": self.storage.get()}
 
 
 def main():

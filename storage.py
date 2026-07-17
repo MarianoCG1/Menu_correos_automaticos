@@ -24,6 +24,7 @@ DEFAULT_STATE = {
     "email_cc_template": "{copia_correo}",
     "email_recipient_field": None,
     "email_cc_field": None,
+    "address_book": [],
 }
 
 

@@ -153,12 +153,26 @@
             </div>
           </div>
 
-          <!-- Lado Derecho: Variables del Sistema -->
-          <div class="editor-sidebar card">
-            <h3>Variables Disponibles</h3>
-            <p class="sidebar-desc">Haz clic en cualquier variable para insertarla en la posición actual del cursor (del asunto o cuerpo).</p>
-            <div id="variablesContainer" class="variables-list">
-              <!-- Se rellena dinámicamente -->
+          <!-- Lado Derecho: Variables del Sistema y Contactos -->
+          <div class="editor-sidebar">
+            <div class="card" style="margin-bottom: 20px;">
+              <h3>Variables Disponibles</h3>
+              <p class="sidebar-desc">Haz clic en cualquier variable para insertarla en la posición actual del cursor.</p>
+              <div id="variablesContainer" class="variables-list">
+                <!-- Se rellena dinámicamente -->
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>📖 Contactos Recurrentes</h3>
+              <p class="sidebar-desc">Agrega correos para añadirlos rápido a Para o CC.</p>
+              <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                <input type="text" id="newContactInput" placeholder="correo@banco.com.pe" style="flex:1; padding: 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size:12px;">
+                <button id="btnAddContact" class="btn-primary" style="padding: 6px 12px; font-size: 12px;">Agregar</button>
+              </div>
+              <ul id="addressBookContainer" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+                <!-- Rellenado por app.js -->
+              </ul>
             </div>
           </div>
         </div>
