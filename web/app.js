@@ -238,6 +238,12 @@ function renderTable() {
 
 // --- Renderizar Redactor de Correo ---
 function renderEmailTemplate() {
+  if (state.email_to_template !== undefined) {
+    document.getElementById("emailToInput").value = state.email_to_template;
+  }
+  if (state.email_cc_template !== undefined) {
+    document.getElementById("emailCcInput").value = state.email_cc_template;
+  }
   if (state.email_subject_template !== undefined) {
     document.getElementById("emailSubjectInput").value = state.email_subject_template;
   }
@@ -346,13 +352,15 @@ function wireButtons() {
 
   // Guardar Cambios de Plantilla de Correo
   document.getElementById("btnSaveTemplate").addEventListener("click", async () => {
+    const toVal = document.getElementById("emailToInput").value;
+    const ccVal = document.getElementById("emailCcInput").value;
     const subject = document.getElementById("emailSubjectInput").value;
     const body = document.getElementById("emailBodyEditor").innerHTML;
     logToConsole("Guardando cambios en la plantilla del correo...");
-    const res = await api().save_email_template(subject, body);
+    const res = await api().save_email_template(subject, body, toVal, ccVal);
     if (res.ok) {
       toast("Plantilla de correo guardada.", "success");
-      logToConsole("Asunto y cuerpo del correo guardados en el estado de la campaña.", "success");
+      logToConsole("Destinatarios, asunto y cuerpo del correo guardados en el estado de la campaña.", "success");
       await refreshFromState(res.state);
     }
   });

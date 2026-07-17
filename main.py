@@ -60,8 +60,8 @@ class Api:
         if not fields:
             return {
                 "ok": False,
-                "error": "No se encontraron campos {campo} en la plantilla. "
-                "Verifica que uses el formato {ejemplo} en el Word.",
+                "error": "No se encontraron campos variables (formatos: {campo}, «campo» o <<campo>>) en la plantilla. "
+                "Verifica que la plantilla de Word los contenga.",
             }
 
         # Asegurar que existan campos especiales para correo
@@ -222,11 +222,17 @@ class Api:
             "state": self.storage.get(),
         }
 
-    def save_email_template(self, subject, body):
-        self.storage.update({
+    def save_email_template(self, subject, body, to_template=None, cc_template=None):
+        update_dict = {
             "email_subject_template": subject,
             "email_body_template": body
-        })
+        }
+        if to_template is not None:
+            update_dict["email_to_template"] = to_template
+        if cc_template is not None:
+            update_dict["email_cc_template"] = cc_template
+
+        self.storage.update(update_dict)
         return {"ok": True, "state": self.storage.get()}
 
     def get_signature_for_mail(self, mail):
@@ -266,6 +272,8 @@ class Api:
         rows = state.get("rows", [])
         subject_template = state.get("email_subject_template", "Carta para {empresa}")
         body_template = state.get("email_body_template", "")
+        to_template = state.get("email_to_template", "{destinatario_correo}")
+        cc_template = state.get("email_cc_template", "{copia_correo}")
 
         if not template_path:
             return {"ok": False, "error": "No hay plantilla Word cargada."}
@@ -329,15 +337,19 @@ class Api:
                 errors.append(f"Fila {i + 1} ({base_name}) - Error Word: {e}")
                 continue
 
-            # 3. Formatear asunto y cuerpo del correo reemplazando variables
+            # 3. Formatear asunto, cuerpo y destinatarios del correo reemplazando variables
             subject = subject_template
             body = body_template
+            recipient = to_template
+            cc = cc_template
 
             for key, val in data.items():
                 placeholder = "{" + key + "}"
                 val_str = "" if val is None else str(val)
                 subject = subject.replace(placeholder, val_str)
                 body = body.replace(placeholder, val_str)
+                recipient = recipient.replace(placeholder, val_str)
+                cc = cc.replace(placeholder, val_str)
 
             # 4. Crear correo en Outlook
             try:
@@ -356,13 +368,9 @@ class Api:
                 else:
                     mail.HTMLBody = body
 
-                # Obtener destinatarios
-                recipient = data.get("destinatario_correo", "").strip()
-                cc = data.get("copia_correo", "").strip()
-
-                mail.To = recipient
-                if cc:
-                    mail.CC = cc
+                mail.To = recipient.strip()
+                if cc.strip():
+                    mail.CC = cc.strip()
 
                 # Adjuntar la carta Word recién generada
                 mail.Attachments.Add(os.path.abspath(output_path))

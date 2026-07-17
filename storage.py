@@ -20,6 +20,8 @@ DEFAULT_STATE = {
     "rows": [],  # cada fila: {"data": {campo: valor, ...}, "status": "Pendiente"}
     "email_subject_template": "Carta para {empresa}",
     "email_body_template": "<p>Estimados,</p><p>Adjunto la carta de presentación correspondiente.</p><p>Atentamente,</p>",
+    "email_to_template": "{destinatario_correo}",
+    "email_cc_template": "{copia_correo}",
     "email_recipient_field": None,
     "email_cc_field": None,
 }
