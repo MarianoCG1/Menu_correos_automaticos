@@ -24,6 +24,19 @@ def _extract_text_from_doc(doc):
     return "\n".join(texts)
 
 
+def extract_letter_name(template_path):
+    """Busca en el documento el código de la carta (ej: 'CARTA N° 00000126 - 2026-BN/3131')
+    y lo devuelve sanitizado para usarlo como nombre de archivo."""
+    doc = Document(template_path)
+    for p in doc.paragraphs:
+        text = p.text.strip()
+        if text.upper().startswith("CARTA "):
+            # Sanitizar para nombre de archivo en Windows (reemplazar '/' por '-' y quitar inválidos)
+            safe_name = text.replace("/", "-").replace("\\", "-").replace(":", "")
+            safe_name = "".join(c for c in safe_name if c not in '<>"|?*')
+            return safe_name.strip()
+    return "Carta_Generada"
+
 def detect_fields(template_path):
     """Devuelve la lista ordenada (sin duplicados) de nombres de campo
     encontrados en la plantilla, ej: ['empresa', 'monto', 'numero_cuenta'].

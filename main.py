@@ -11,7 +11,7 @@ import traceback
 
 import webview
 
-from docx_parser import detect_fields, generate_letter
+from docx_parser import detect_fields, generate_letter, extract_letter_name
 from excel_loader import read_excel, auto_map_columns, build_rows_for_fields
 from storage import Storage, STATUS_OPTIONS
 
@@ -312,6 +312,14 @@ class Api:
 
         processed = 0
         errors = []
+        
+        import tempfile
+        import shutil
+        try:
+            official_letter_name = extract_letter_name(template_path)
+        except Exception:
+            official_letter_name = "Carta_Generada"
+        temp_dir = tempfile.gettempdir()
 
         for i, row in enumerate(rows):
             data = row.get("data", {})
@@ -380,8 +388,16 @@ class Api:
                 if cc.strip():
                     mail.CC = cc.strip()
 
-                # Adjuntar la carta Word recién generada
-                mail.Attachments.Add(os.path.abspath(output_path))
+                # Adjuntar la carta Word usando el nombre oficial fijo
+                temp_attach_path = os.path.join(temp_dir, f"{official_letter_name}.docx")
+                shutil.copy2(output_path, temp_attach_path)
+                mail.Attachments.Add(os.path.abspath(temp_attach_path))
+                
+                # Opcional: borrar el temporal después de adjuntar
+                try:
+                    os.remove(temp_attach_path)
+                except Exception:
+                    pass
 
                 if send_directly:
                     mail.Send()
