@@ -6,6 +6,4 @@ build/
 .idea/
 .vscode/
 .gitattributes
-*.txt
-*.spec
 read_docx.py
