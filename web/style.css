@@ -475,6 +475,28 @@ td[contenteditable="true"]:focus {
   background: #7c3aed;
 }
 
+.column-filter-input {
+  width: 100%;
+  padding: 4px 8px;
+  font-family: var(--font-primary);
+  font-size: 11px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: white;
+  outline: none;
+  font-weight: normal;
+}
+
+.column-filter-input:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.15);
+}
+
+.filter-row th {
+  background: #f1f5f9;
+  border-bottom: 1px solid var(--border);
+}
+
 select.status-select {
   font-family: var(--font-primary);
   font-size: 12px;

@@ -25,6 +25,35 @@ except ImportError:
 import re
 EMAIL_REGEX = re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}")
 
+def clean_and_fix_email(email_str):
+    if not email_str or not isinstance(email_str, str):
+        return email_str
+    
+    clean = email_str.strip()
+    if "@" not in clean:
+        return clean
+    
+    clean = clean.lower()
+    parts = clean.split("@")
+    if len(parts) != 2:
+        return clean
+    
+    user_part, domain_part = parts[0].strip(), parts[1].strip()
+    domain_part = domain_part.rstrip(".")
+    
+    if re.search(r"\.(c|co|con|comm)$", domain_part):
+        domain_part = re.sub(r"\.(c|co|con|comm)$", ".com", domain_part)
+    elif re.search(r"\.com\.c$", domain_part):
+        domain_part = re.sub(r"\.com\.c$", ".com.pe", domain_part)
+        
+    return f"{user_part}@{domain_part}"
+
+def has_email_issue(val_str):
+    if not val_str or not isinstance(val_str, str) or "@" not in val_str:
+        return False
+    fixed = clean_and_fix_email(val_str)
+    return fixed != val_str.strip()
+
 def row_has_valid_email(row_data, to_template=""):
     if not isinstance(row_data, dict):
         return False
@@ -242,6 +271,48 @@ class Api:
                 
         self.storage.update({"rows": rows})
         return {"ok": True, "count": count_selected, "state": self.storage.get()}
+
+    def check_email_issues(self):
+        state = self.storage.get()
+        rows = state.get("rows", [])
+        issues_count = 0
+        affected_rows = []
+        
+        for i, row in enumerate(rows):
+            data = row.get("data", {})
+            row_has_issue = False
+            for k, v in data.items():
+                if any(kw in k.lower() for kw in ["correo", "email", "mail", "destinatario", "copia"]) or (isinstance(v, str) and "@" in v):
+                    if has_email_issue(v):
+                        row_has_issue = True
+                        break
+            if row_has_issue:
+                issues_count += 1
+                affected_rows.append(i + 1)
+                
+        return {"ok": True, "issues_count": issues_count, "affected_rows": affected_rows}
+
+    def auto_correct_emails(self):
+        state = self.storage.get()
+        rows = state.get("rows", [])
+        to_template = state.get("email_to_template", "{destinatario_correo}")
+        
+        corrected_count = 0
+        for row in rows:
+            data = row.get("data", {})
+            row_modified = False
+            for k, v in data.items():
+                if any(kw in k.lower() for kw in ["correo", "email", "mail", "destinatario", "copia"]) or (isinstance(v, str) and "@" in v):
+                    fixed = clean_and_fix_email(v)
+                    if fixed != v:
+                        data[k] = fixed
+                        row_modified = True
+            if row_modified:
+                corrected_count += 1
+            row["selected"] = row_has_valid_email(data, to_template)
+            
+        self.storage.update({"rows": rows})
+        return {"ok": True, "corrected_count": corrected_count, "state": self.storage.get()}
 
     # ---------- salida ----------
     def choose_output_folder(self):

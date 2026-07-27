@@ -6,6 +6,8 @@ let state = {
   email_body_template: "<p>Estimados,</p><p>Adjunto la carta de presentación correspondiente.</p><p>Atentamente,</p>"
 };
 
+let columnFilters = {};
+
 // --- Referencias API de pywebview ---
 function api() {
   return window.pywebview.api;
@@ -98,10 +100,12 @@ async function refreshFromState(newState) {
   renderVariables();
   renderAddressBook();
   renderSelectionPanel();
+  checkEmailIssuesAndNotify();
 
   const hasFields = state.fields && state.fields.length > 0;
   document.getElementById("btnExcel").disabled = !hasFields;
   document.getElementById("btnAddRow").disabled = !hasFields;
+  document.getElementById("btnAutoCorrect").disabled = !hasFields;
   
   const selectedCount = (state.rows || []).filter(r => r.selected !== false).length;
   const canSend = Boolean(state.template_path && selectedCount > 0);
@@ -209,9 +213,52 @@ function renderTable() {
   actionsTh.textContent = "Acciones";
   head.appendChild(actionsTh);
 
+  // Fila de Filtros por Columna
+  const filterTr = document.createElement("tr");
+  filterTr.className = "filter-row";
+  
+  const filterMasterTd = document.createElement("th");
+  filterTr.appendChild(filterMasterTd);
+  
+  state.fields.forEach((f) => {
+    const filterTh = document.createElement("th");
+    filterTh.style.padding = "4px 6px";
+    const filterInput = document.createElement("input");
+    filterInput.type = "text";
+    filterInput.className = "column-filter-input";
+    filterInput.placeholder = `🔍 Filtrar ${f}...`;
+    filterInput.value = columnFilters[f] || "";
+    filterInput.addEventListener("input", (e) => {
+      columnFilters[f] = e.target.value.toLowerCase().trim();
+      applyTableFilters();
+    });
+    filterTh.appendChild(filterInput);
+    filterTr.appendChild(filterTh);
+  });
+  
+  const filterStatusTh = document.createElement("th");
+  filterStatusTh.style.padding = "4px 6px";
+  const filterStatusInput = document.createElement("input");
+  filterStatusInput.type = "text";
+  filterStatusInput.className = "column-filter-input";
+  filterStatusInput.placeholder = "🔍 Estado...";
+  filterStatusInput.value = columnFilters["_status"] || "";
+  filterStatusInput.addEventListener("input", (e) => {
+    columnFilters["_status"] = e.target.value.toLowerCase().trim();
+    applyTableFilters();
+  });
+  filterStatusTh.appendChild(filterStatusInput);
+  filterTr.appendChild(filterStatusTh);
+  
+  const filterActionsTh = document.createElement("th");
+  filterTr.appendChild(filterActionsTh);
+  
+  head.appendChild(filterTr);
+
   // Filas de tabla
   (state.rows || []).forEach((row, index) => {
     const tr = document.createElement("tr");
+    tr.setAttribute("data-row-index", index);
 
     // Casilla de Selección por Fila
     const checkTd = document.createElement("td");
@@ -293,6 +340,68 @@ function renderTable() {
 
     body.appendChild(tr);
   });
+
+  applyTableFilters();
+}
+
+// --- Aplicar Filtros por Columna en DOM ---
+function applyTableFilters() {
+  const body = document.getElementById("tableBody");
+  if (!body) return;
+  const trs = body.querySelectorAll("tr");
+  
+  trs.forEach((tr) => {
+    const rowIdx = parseInt(tr.getAttribute("data-row-index"), 10);
+    const rowObj = (state.rows || [])[rowIdx];
+    if (!rowObj) return;
+    
+    let matches = true;
+    for (const f of (state.fields || [])) {
+      const filterVal = columnFilters[f];
+      if (filterVal) {
+        const cellVal = String(rowObj.data[f] || "").toLowerCase();
+        if (!cellVal.includes(filterVal)) {
+          matches = false;
+          break;
+        }
+      }
+    }
+    
+    if (matches && columnFilters["_status"]) {
+      const statusVal = String(rowObj.status || "").toLowerCase();
+      if (!statusVal.includes(columnFilters["_status"])) {
+        matches = false;
+      }
+    }
+    
+    tr.style.display = matches ? "" : "none";
+  });
+}
+
+// --- Verificar si existen errores de formato de correo ---
+async function checkEmailIssuesAndNotify() {
+  const banner = document.getElementById("emailIssuesBanner");
+  const btnCorrect = document.getElementById("btnAutoCorrect");
+  if (!banner || !btnCorrect) return;
+
+  if (!state.rows || state.rows.length === 0) {
+    banner.style.display = "none";
+    btnCorrect.disabled = true;
+    return;
+  }
+
+  btnCorrect.disabled = false;
+  try {
+    const res = await api().check_email_issues();
+    if (res.ok && res.issues_count > 0) {
+      banner.style.display = "block";
+      banner.innerHTML = `⚠️ <strong>Atención:</strong> Se detectaron ${res.issues_count} registros con inconsistencias en su correo (mayúsculas o dominios incompletos como <code>.c</code>). Haz clic en el botón de arriba <strong>"✨ Auto-Corregir Correos"</strong> para estandarizarlos.`;
+    } else {
+      banner.style.display = "none";
+    }
+  } catch (e) {
+    banner.style.display = "none";
+  }
 }
 
 // --- Renderizar Panel de Selección en Pestaña 3 ---
@@ -598,6 +707,29 @@ function wireButtons() {
     document.getElementById("consoleLog").innerHTML = "";
     logToConsole("Consola limpia.");
   });
+
+  // Botón Auto-Corregir Correos
+  const btnAutoCorrect = document.getElementById("btnAutoCorrect");
+  if (btnAutoCorrect) {
+    btnAutoCorrect.addEventListener("click", async () => {
+      btnAutoCorrect.disabled = true;
+      toast("Analizando y limpiando correos...", "info");
+      logToConsole("Ejecutando sanitización manual de correos (minúsculas, completando .c -> .com)...", "info");
+      try {
+        const res = await api().auto_correct_emails();
+        if (res.ok && res.corrected_count > 0) {
+          toast(`✨ Se limpiaron y corrigieron ${res.corrected_count} registros.`, "success");
+          logToConsole(`Sanitización exitosa: ${res.corrected_count} registros corregidos con éxito.`, "success");
+          await refreshFromState(res.state);
+        } else {
+          toast("Todos los correos ya estaban limpios y bien formateados.", "info");
+          logToConsole("No se encontraron correos dañados ni inconsistentes.", "info");
+        }
+      } finally {
+        btnAutoCorrect.disabled = false;
+      }
+    });
+  }
 
   // Botones de Selección Rápida en Pestaña 3
   const btnSelectValid = document.getElementById("btnSelectValid");
