@@ -304,6 +304,8 @@ class Api:
         try:
             outlook = win32com.client.Dispatch("Outlook.Application")
             word_app = win32com.client.Dispatch("Word.Application")
+            word_app.Visible = False
+            word_app.DisplayAlerts = 0
         except Exception as e:
             if com_initialized:
                 pythoncom.CoUninitialize()
@@ -399,31 +401,37 @@ class Api:
                 if cc.strip():
                     mail.CC = cc.strip()
 
-                # Adjuntar archivo como PDF si es posible
+                # Adjuntar archivo como PDF de forma robusta
                 temp_pdf_path = os.path.join(temp_dir, f"{official_letter_name}.pdf")
                 pdf_success = False
-                if word_app:
+                
+                try:
+                    doc_for_pdf = word_app.Documents.Open(os.path.abspath(output_path), ReadOnly=True, ConfirmConversions=False)
+                    doc_for_pdf.SaveAs2(os.path.abspath(temp_pdf_path), FileFormat=17) # 17 = wdFormatPDF
+                    doc_for_pdf.Close(SaveChanges=0)
+                    pdf_success = True
+                except Exception as pdf_err:
+                    # Reintento: matar instancia corrupta y reiniciar Word COM
                     try:
-                        doc_for_pdf = word_app.Documents.Open(os.path.abspath(output_path))
-                        doc_for_pdf.SaveAs(os.path.abspath(temp_pdf_path), FileFormat=17) # 17 = wdFormatPDF
-                        doc_for_pdf.Close()
-                        pdf_success = True
+                        word_app.Quit()
                     except Exception:
                         pass
+                    try:
+                        word_app = win32com.client.Dispatch("Word.Application")
+                        word_app.Visible = False
+                        word_app.DisplayAlerts = 0
+                        doc_for_pdf = word_app.Documents.Open(os.path.abspath(output_path), ReadOnly=True, ConfirmConversions=False)
+                        doc_for_pdf.SaveAs2(os.path.abspath(temp_pdf_path), FileFormat=17)
+                        doc_for_pdf.Close(SaveChanges=0)
+                        pdf_success = True
+                    except Exception as retry_err:
+                        errors.append(f"Fila {i + 1} ({base_name}) - Error PDF (sin envío): {retry_err}")
+                        continue  # NO envía el correo si no pudo generar PDF
                 
                 if pdf_success:
                     mail.Attachments.Add(os.path.abspath(temp_pdf_path))
                     try:
                         os.remove(temp_pdf_path)
-                    except Exception:
-                        pass
-                else:
-                    # Fallback a Word (.docx) si la conversión a PDF falla
-                    temp_attach_path = os.path.join(temp_dir, f"{official_letter_name}.docx")
-                    shutil.copy2(output_path, temp_attach_path)
-                    mail.Attachments.Add(os.path.abspath(temp_attach_path))
-                    try:
-                        os.remove(temp_attach_path)
                     except Exception:
                         pass
 
@@ -474,6 +482,63 @@ class Api:
             book.remove(email)
             self.storage.update({"address_book": book})
         return {"ok": True, "state": self.storage.get()}
+
+    def generate_single_pdf(self, row_index):
+        state = self.storage.get()
+        template_path = state.get("template_path")
+        rows = state.get("rows", [])
+        
+        if not template_path:
+            return {"ok": False, "error": "No hay plantilla cargada."}
+        if row_index < 0 or row_index >= len(rows):
+            return {"ok": False, "error": "Índice de fila inválido."}
+        
+        data = dict(rows[row_index].get("data", {}))
+        
+        # Formatear cuenta
+        for key in list(data.keys()):
+            if "cuenta" in key.lower():
+                acc = str(data[key]).replace("-", "").replace(" ", "").strip()
+                if len(acc) == 10 and acc.isdigit():
+                    data[key] = f"0{acc[0]}-{acc[1:4]}-{acc[4:]}"
+                elif len(acc) == 11 and acc.startswith("0") and acc.isdigit():
+                    data[key] = f"0{acc[1]}-{acc[2:5]}-{acc[5:]}"
+        
+        import tempfile
+        temp_dir = tempfile.gettempdir()
+        temp_docx = os.path.join(temp_dir, f"auditoria_fila_{row_index + 1}.docx")
+        
+        try:
+            generate_letter(template_path, data, temp_docx)
+        except Exception as e:
+            return {"ok": False, "error": f"Error generando carta: {e}"}
+        
+        try:
+            import pythoncom
+            import win32com.client
+            pythoncom.CoInitialize()
+            word_app = win32com.client.Dispatch("Word.Application")
+            word_app.Visible = False
+            word_app.DisplayAlerts = 0
+            
+            letter_name = extract_letter_name(template_path)
+            pdf_path = os.path.join(temp_dir, f"{letter_name}.pdf")
+            
+            doc = word_app.Documents.Open(os.path.abspath(temp_docx), ReadOnly=True, ConfirmConversions=False)
+            doc.SaveAs2(os.path.abspath(pdf_path), FileFormat=17)
+            doc.Close(SaveChanges=0)
+            word_app.Quit()
+            pythoncom.CoUninitialize()
+            
+            os.startfile(pdf_path)
+            return {"ok": True, "pdf_path": pdf_path}
+        except Exception as e:
+            return {"ok": False, "error": f"Error convirtiendo a PDF: {e}"}
+        finally:
+            try:
+                os.remove(temp_docx)
+            except Exception:
+                pass
 
 
 def main():

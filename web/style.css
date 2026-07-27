@@ -437,6 +437,28 @@ td[contenteditable="true"]:focus {
   border-color: #fca5a5;
 }
 
+.btn-small-info {
+  background: #0284c7;
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 6px;
+  transition: background 0.2s;
+}
+
+.btn-small-info:hover {
+  background: #0369a1;
+}
+
+.btn-small-info:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
 select.status-select {
   font-family: var(--font-primary);
   font-size: 12px;

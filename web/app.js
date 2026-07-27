@@ -221,8 +221,32 @@ function renderTable() {
     statusTd.appendChild(select);
     tr.appendChild(statusTd);
 
-    // Columna de Acción (Eliminar)
+    // Columna de Acción (Ver PDF y Eliminar)
     const actionsTd = document.createElement("td");
+    
+    const pdfBtn = document.createElement("button");
+    pdfBtn.textContent = "📄 Ver PDF";
+    pdfBtn.className = "btn-small-info";
+    pdfBtn.addEventListener("click", async () => {
+      toast("Generando PDF de auditoría...", "info");
+      pdfBtn.disabled = true;
+      pdfBtn.textContent = "⏳...";
+      try {
+        const res = await api().generate_single_pdf(index);
+        if (res.ok) {
+            toast("PDF generado y abierto.", "success");
+            logToConsole(`PDF de auditoría abierto para fila ${index + 1}.`, "success");
+        } else {
+            toast(res.error, "error");
+            logToConsole(`Error PDF fila ${index + 1}: ${res.error}`, "error");
+        }
+      } finally {
+        pdfBtn.disabled = false;
+        pdfBtn.textContent = "📄 Ver PDF";
+      }
+    });
+    actionsTd.appendChild(pdfBtn);
+
     const delBtn = document.createElement("button");
     delBtn.textContent = "Eliminar";
     delBtn.className = "danger-small";
@@ -231,6 +255,7 @@ function renderTable() {
       await refreshFromState(s);
     });
     actionsTd.appendChild(delBtn);
+
     tr.appendChild(actionsTd);
 
     body.appendChild(tr);
@@ -411,39 +436,7 @@ function wireButtons() {
     await refreshFromState(s);
   });
 
-  // Generar Cartas Word Únicamente
-  document.getElementById("btnGenerate").addEventListener("click", async () => {
-    logToConsole("Iniciando generación de cartas Word (.docx)...");
-    document.getElementById("btnGenerate").disabled = true;
-    
-    // Auto-guardar campos antes de procesar
-    const toVal = document.getElementById("emailToInput").value;
-    const ccVal = document.getElementById("emailCcInput").value;
-    const subject = document.getElementById("emailSubjectInput").value;
-    const body = document.getElementById("emailBodyEditor").innerHTML;
-    await api().save_email_template(subject, body, toVal, ccVal);
-    
-    try {
-      const res = await api().generate_letters();
-      if (res.ok) {
-        let msg = `Procesado: ${res.generated} cartas Word generadas con éxito.`;
-        if (res.errors && res.errors.length) {
-          msg += ` Errores: ${res.errors.length}.`;
-          res.errors.forEach(err => logToConsole(err, "error"));
-        }
-        toast(msg, res.errors && res.errors.length > 0 ? "error" : "success");
-        logToConsole(msg, "success");
-        await refreshFromState(res.state);
-      } else {
-        toast(res.error, "error");
-        logToConsole(`Error en generación: ${res.error}`, "error");
-      }
-    } catch (e) {
-      logToConsole(`Error del sistema: ${e}`, "error");
-    } finally {
-      document.getElementById("btnGenerate").disabled = false;
-    }
-  });
+
 
   // Guardar Cambios de Plantilla de Correo
   document.getElementById("btnSaveTemplate").addEventListener("click", async () => {
