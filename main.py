@@ -116,7 +116,17 @@ class Api:
 
         mapping = auto_map_columns(columns, fields)
         mapped_rows = build_rows_for_fields(fields, columns, excel_rows, mapping)
-        new_rows = [{"data": row, "status": "Pendiente", "selected": True} for row in mapped_rows]
+        
+        to_template = state.get("email_to_template", "{destinatario_correo}")
+        new_rows = []
+        for row in mapped_rows:
+            recipient = to_template
+            for key, val in row.items():
+                placeholder = "{" + key + "}"
+                val_str = "" if val is None else str(val)
+                recipient = recipient.replace(placeholder, val_str)
+            is_valid = bool(recipient and "@" in recipient and recipient.strip())
+            new_rows.append({"data": row, "status": "Pendiente", "selected": is_valid})
 
         self.storage.update(
             {
@@ -190,6 +200,28 @@ class Api:
             row["selected"] = (i == 0)
         self.storage.update({"rows": rows})
         return {"ok": True, "state": self.storage.get()}
+
+    def select_only_valid_emails(self):
+        state = self.storage.get()
+        rows = state.get("rows", [])
+        to_template = state.get("email_to_template", "{destinatario_correo}")
+        
+        count_selected = 0
+        for row in rows:
+            data = row.get("data", {})
+            recipient = to_template
+            for key, val in data.items():
+                placeholder = "{" + key + "}"
+                val_str = "" if val is None else str(val)
+                recipient = recipient.replace(placeholder, val_str)
+            
+            is_valid = bool(recipient and "@" in recipient and recipient.strip())
+            row["selected"] = is_valid
+            if is_valid:
+                count_selected += 1
+                
+        self.storage.update({"rows": rows})
+        return {"ok": True, "count": count_selected, "state": self.storage.get()}
 
     # ---------- salida ----------
     def choose_output_folder(self):

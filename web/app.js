@@ -600,6 +600,16 @@ function wireButtons() {
   });
 
   // Botones de Selección Rápida en Pestaña 3
+  const btnSelectValid = document.getElementById("btnSelectValid");
+  if (btnSelectValid) {
+    btnSelectValid.addEventListener("click", async () => {
+      const res = await api().select_only_valid_emails();
+      await refreshFromState(res.state);
+      toast(`Seleccionados ${res.count} registros con correo.`, "success");
+      logToConsole(`Filtro aplicado: Marcados ${res.count} registros que contienen una dirección de correo válida.`, "info");
+    });
+  }
+
   const btnSelectAll = document.getElementById("btnSelectAll");
   if (btnSelectAll) {
     btnSelectAll.addEventListener("click", async () => {
