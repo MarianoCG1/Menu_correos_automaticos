@@ -75,7 +75,7 @@ class Api:
         new_rows = []
         for r in existing_rows:
             new_data = {f: r.get("data", {}).get(f, "") for f in fields}
-            new_rows.append({"data": new_data, "status": r.get("status", "Pendiente")})
+            new_rows.append({"data": new_data, "status": r.get("status", "Pendiente"), "selected": r.get("selected", True)})
 
         self.storage.update(
             {
@@ -116,7 +116,7 @@ class Api:
 
         mapping = auto_map_columns(columns, fields)
         mapped_rows = build_rows_for_fields(fields, columns, excel_rows, mapping)
-        new_rows = [{"data": row, "status": "Pendiente"} for row in mapped_rows]
+        new_rows = [{"data": row, "status": "Pendiente", "selected": True} for row in mapped_rows]
 
         self.storage.update(
             {
@@ -139,7 +139,7 @@ class Api:
         state = self.storage.get()
         empty = {f: "" for f in state.get("fields", [])}
         rows = state.get("rows", [])
-        rows.append({"data": empty, "status": "Pendiente"})
+        rows.append({"data": empty, "status": "Pendiente", "selected": True})
         self.storage.update({"rows": rows})
         return self.storage.get()
 
@@ -166,6 +166,30 @@ class Api:
             rows[index]["status"] = status
             self.storage.update({"rows": rows})
         return {"ok": True}
+
+    def toggle_row_selection(self, index, selected):
+        state = self.storage.get()
+        rows = state.get("rows", [])
+        if 0 <= index < len(rows):
+            rows[index]["selected"] = bool(selected)
+            self.storage.update({"rows": rows})
+        return {"ok": True, "state": self.storage.get()}
+
+    def toggle_all_selection(self, selected):
+        state = self.storage.get()
+        rows = state.get("rows", [])
+        for row in rows:
+            row["selected"] = bool(selected)
+        self.storage.update({"rows": rows})
+        return {"ok": True, "state": self.storage.get()}
+
+    def select_only_first(self):
+        state = self.storage.get()
+        rows = state.get("rows", [])
+        for i, row in enumerate(rows):
+            row["selected"] = (i == 0)
+        self.storage.update({"rows": rows})
+        return {"ok": True, "state": self.storage.get()}
 
     # ---------- salida ----------
     def choose_output_folder(self):
@@ -326,7 +350,11 @@ class Api:
             official_letter_name = "Carta_Generada"
         temp_dir = tempfile.gettempdir()
 
-        for i, row in enumerate(rows):
+        selected_rows = [(i, r) for i, r in enumerate(rows) if r.get("selected", True)]
+        if not selected_rows:
+            return {"ok": False, "error": "No hay ningún registro seleccionado para enviar. Marca al menos una casilla."}
+
+        for i, row in selected_rows:
             data = row.get("data", {})
             
             # --- Formatear Número de Cuenta ---

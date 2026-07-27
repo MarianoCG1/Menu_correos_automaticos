@@ -185,6 +185,23 @@
         </div>
 
         <div class="send-layout">
+          <!-- Tarjeta de Selección de Destinatarios -->
+          <div class="card selection-card">
+            <div class="selection-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <h3>📋 Selección de Destinatarios</h3>
+              <span class="badge" id="selectedCountBadge">0 / 0 seleccionados</span>
+            </div>
+            <p class="card-hint" style="margin-bottom: 12px;">Marca o desmarca los registros que deseas procesar en esta ejecución:</p>
+            <div class="selection-actions" style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
+              <button id="btnSelectAll" class="btn-outline small">✓ Seleccionar Todos</button>
+              <button id="btnDeselectAll" class="btn-outline small">✕ Deseleccionar Todos</button>
+              <button id="btnSelectTest" class="btn-test small">🧪 Solo el Primero (Prueba)</button>
+            </div>
+            <div id="selectionList" class="selection-list" style="max-height: 180px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px; background: #f8fafc;">
+              <!-- Se rellena dinámicamente -->
+            </div>
+          </div>
+
           <div class="card send-controls">
             <h3>Opciones de Despacho</h3>
             <div class="radio-group">

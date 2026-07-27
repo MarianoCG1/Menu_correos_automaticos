@@ -97,12 +97,14 @@ async function refreshFromState(newState) {
   renderEmailTemplate();
   renderVariables();
   renderAddressBook();
+  renderSelectionPanel();
 
   const hasFields = state.fields && state.fields.length > 0;
   document.getElementById("btnExcel").disabled = !hasFields;
   document.getElementById("btnAddRow").disabled = !hasFields;
   
-  const canSend = Boolean(state.template_path && state.rows && state.rows.length > 0);
+  const selectedCount = (state.rows || []).filter(r => r.selected !== false).length;
+  const canSend = Boolean(state.template_path && selectedCount > 0);
   const startBtn = document.getElementById("btnStartSend");
   if (startBtn) {
     startBtn.disabled = !canSend;
@@ -176,6 +178,22 @@ function renderTable() {
 
   if (!state.fields || !state.fields.length) return;
 
+  // Cabecera de Casilla Master (Seleccionar Todos)
+  const masterTh = document.createElement("th");
+  masterTh.style.width = "36px";
+  masterTh.style.textAlign = "center";
+  const masterCheck = document.createElement("input");
+  masterCheck.type = "checkbox";
+  masterCheck.title = "Seleccionar/Deseleccionar Todos";
+  const rowsList = state.rows || [];
+  masterCheck.checked = rowsList.length > 0 && rowsList.every(r => r.selected !== false);
+  masterCheck.addEventListener("change", async () => {
+    const s = await api().toggle_all_selection(masterCheck.checked);
+    await refreshFromState(s.state);
+  });
+  masterTh.appendChild(masterCheck);
+  head.appendChild(masterTh);
+
   // Cabeceras de tabla
   state.fields.forEach((f) => {
     const th = document.createElement("th");
@@ -194,6 +212,19 @@ function renderTable() {
   // Filas de tabla
   (state.rows || []).forEach((row, index) => {
     const tr = document.createElement("tr");
+
+    // Casilla de Selección por Fila
+    const checkTd = document.createElement("td");
+    checkTd.style.textAlign = "center";
+    const rowCheck = document.createElement("input");
+    rowCheck.type = "checkbox";
+    rowCheck.checked = row.selected !== false;
+    rowCheck.addEventListener("change", async () => {
+      const s = await api().toggle_row_selection(index, rowCheck.checked);
+      await refreshFromState(s.state);
+    });
+    checkTd.appendChild(rowCheck);
+    tr.appendChild(checkTd);
 
     state.fields.forEach((field) => {
       const td = document.createElement("td");
@@ -261,6 +292,57 @@ function renderTable() {
     tr.appendChild(actionsTd);
 
     body.appendChild(tr);
+  });
+}
+
+// --- Renderizar Panel de Selección en Pestaña 3 ---
+function renderSelectionPanel() {
+  const listEl = document.getElementById("selectionList");
+  const badgeEl = document.getElementById("selectedCountBadge");
+  if (!listEl || !badgeEl) return;
+  listEl.innerHTML = "";
+
+  const rows = state.rows || [];
+  const selectedCount = rows.filter(r => r.selected !== false).length;
+  badgeEl.textContent = `${selectedCount} / ${rows.length} seleccionados`;
+
+  if (rows.length === 0) {
+    listEl.innerHTML = "<span style='color: var(--text-muted); font-size: 12px;'>No hay registros cargados. Carga primero un Excel o plantilla.</span>";
+    return;
+  }
+
+  rows.forEach((r, idx) => {
+    const item = document.createElement("label");
+    item.style.display = "flex";
+    item.style.alignItems = "center";
+    item.style.gap = "10px";
+    item.style.padding = "6px 8px";
+    item.style.borderBottom = "1px solid #e2e8f0";
+    item.style.fontSize = "12px";
+    item.style.cursor = "pointer";
+
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = r.selected !== false;
+    cb.addEventListener("change", async () => {
+      const s = await api().toggle_row_selection(idx, cb.checked);
+      await refreshFromState(s.state);
+    });
+
+    let labelText = `Fila ${idx + 1}`;
+    for (const key of ["empresa", "nombre_empresa", "compania", "cliente", "razon_social", "destinatario_correo"]) {
+      if (r.data && r.data[key]) {
+        labelText += `: ${r.data[key]}`;
+        break;
+      }
+    }
+
+    const span = document.createElement("span");
+    span.textContent = labelText;
+
+    item.appendChild(cb);
+    item.appendChild(span);
+    listEl.appendChild(item);
   });
 }
 
@@ -516,6 +598,35 @@ function wireButtons() {
     document.getElementById("consoleLog").innerHTML = "";
     logToConsole("Consola limpia.");
   });
+
+  // Botones de Selección Rápida en Pestaña 3
+  const btnSelectAll = document.getElementById("btnSelectAll");
+  if (btnSelectAll) {
+    btnSelectAll.addEventListener("click", async () => {
+      const s = await api().toggle_all_selection(true);
+      await refreshFromState(s.state);
+      toast("Todos los registros seleccionados.", "info");
+    });
+  }
+
+  const btnDeselectAll = document.getElementById("btnDeselectAll");
+  if (btnDeselectAll) {
+    btnDeselectAll.addEventListener("click", async () => {
+      const s = await api().toggle_all_selection(false);
+      await refreshFromState(s.state);
+      toast("Todos los registros desmarcados.", "info");
+    });
+  }
+
+  const btnSelectTest = document.getElementById("btnSelectTest");
+  if (btnSelectTest) {
+    btnSelectTest.addEventListener("click", async () => {
+      const s = await api().select_only_first();
+      await refreshFromState(s.state);
+      toast("Seleccionado únicamente el 1er registro para pruebas.", "success");
+      logToConsole("Modo prueba: Marcado 1 solo registro (Fila 1). Listo para enviar.", "info");
+    });
+  }
 }
 
 // --- Inicio al cargar WebView ---
