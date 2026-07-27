@@ -22,6 +22,37 @@ try:
 except ImportError:
     pass
 
+import re
+EMAIL_REGEX = re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}")
+
+def row_has_valid_email(row_data, to_template=""):
+    if not isinstance(row_data, dict):
+        return False
+    
+    # 1. Buscar si algún valor del registro contiene un correo estructurado válido
+    for key, val in row_data.items():
+        if val and isinstance(val, str):
+            val_clean = val.strip()
+            if EMAIL_REGEX.search(val_clean):
+                return True
+                
+    # 2. Si hay to_template, verificar si la sustitución genera un correo válido
+    if to_template:
+        replaced_to = to_template
+        has_replaced_value = False
+        for key, val in row_data.items():
+            placeholder = "{" + key + "}"
+            if placeholder in replaced_to:
+                val_str = "" if val is None else str(val).strip()
+                if val_str and EMAIL_REGEX.search(val_str):
+                    has_replaced_value = True
+                replaced_to = replaced_to.replace(placeholder, val_str)
+        
+        if has_replaced_value and EMAIL_REGEX.search(replaced_to):
+            return True
+            
+    return False
+
 
 def resource_path(relative_path):
     """Devuelve la ruta correcta tanto en desarrollo como empaquetado
@@ -120,12 +151,7 @@ class Api:
         to_template = state.get("email_to_template", "{destinatario_correo}")
         new_rows = []
         for row in mapped_rows:
-            recipient = to_template
-            for key, val in row.items():
-                placeholder = "{" + key + "}"
-                val_str = "" if val is None else str(val)
-                recipient = recipient.replace(placeholder, val_str)
-            is_valid = bool(recipient and "@" in recipient and recipient.strip())
+            is_valid = row_has_valid_email(row, to_template)
             new_rows.append({"data": row, "status": "Pendiente", "selected": is_valid})
 
         self.storage.update(
@@ -209,13 +235,7 @@ class Api:
         count_selected = 0
         for row in rows:
             data = row.get("data", {})
-            recipient = to_template
-            for key, val in data.items():
-                placeholder = "{" + key + "}"
-                val_str = "" if val is None else str(val)
-                recipient = recipient.replace(placeholder, val_str)
-            
-            is_valid = bool(recipient and "@" in recipient and recipient.strip())
+            is_valid = row_has_valid_email(data, to_template)
             row["selected"] = is_valid
             if is_valid:
                 count_selected += 1

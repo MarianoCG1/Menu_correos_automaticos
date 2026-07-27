@@ -603,6 +603,12 @@ function wireButtons() {
   const btnSelectValid = document.getElementById("btnSelectValid");
   if (btnSelectValid) {
     btnSelectValid.addEventListener("click", async () => {
+      const toVal = document.getElementById("emailToInput").value;
+      const ccVal = document.getElementById("emailCcInput").value;
+      const subject = document.getElementById("emailSubjectInput").value;
+      const body = document.getElementById("emailBodyEditor").innerHTML;
+      await api().save_email_template(subject, body, toVal, ccVal);
+
       const res = await api().select_only_valid_emails();
       await refreshFromState(res.state);
       toast(`Seleccionados ${res.count} registros con correo.`, "success");
