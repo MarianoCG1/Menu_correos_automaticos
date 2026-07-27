@@ -41,10 +41,18 @@ def clean_and_fix_email(email_str):
     user_part, domain_part = parts[0].strip(), parts[1].strip()
     domain_part = domain_part.rstrip(".")
     
-    if re.search(r"\.(c|co|con|comm)$", domain_part):
-        domain_part = re.sub(r"\.(c|co|con|comm)$", ".com", domain_part)
-    elif re.search(r"\.com\.c$", domain_part):
-        domain_part = re.sub(r"\.com\.c$", ".com.pe", domain_part)
+    if "." not in domain_part:
+        if domain_part in ["gmail", "outlook", "hotmail", "yahoo", "live", "icloud", "msn"]:
+            domain_part = f"{domain_part}.com"
+        elif domain_part in ["banco", "bn"]:
+            domain_part = f"{domain_part}.pe"
+        elif len(domain_part) > 1:
+            domain_part = f"{domain_part}.com"
+    else:
+        if re.search(r"\.(c|co|con|comm)$", domain_part):
+            domain_part = re.sub(r"\.(c|co|con|comm)$", ".com", domain_part)
+        elif re.search(r"\.com\.c$", domain_part):
+            domain_part = re.sub(r"\.com\.c$", ".com.pe", domain_part)
         
     return f"{user_part}@{domain_part}"
 
