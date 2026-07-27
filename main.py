@@ -278,7 +278,8 @@ class Api:
         if not template_path:
             return {"ok": False, "error": "No hay plantilla Word cargada."}
         if not output_folder:
-            return {"ok": False, "error": "Selecciona primero una carpeta de salida."}
+            import tempfile
+            output_folder = tempfile.gettempdir()
         if not rows:
             return {"ok": False, "error": "No hay datos en la tabla."}
 

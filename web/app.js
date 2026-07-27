@@ -102,9 +102,11 @@ async function refreshFromState(newState) {
   document.getElementById("btnExcel").disabled = !hasFields;
   document.getElementById("btnAddRow").disabled = !hasFields;
   
-  const canSend = state.template_path && state.output_folder && state.rows && state.rows.length > 0;
-  document.getElementById("btnGenerate").disabled = !canSend;
-  document.getElementById("btnStartSend").disabled = !canSend;
+  const canSend = Boolean(state.template_path && state.rows && state.rows.length > 0);
+  const startBtn = document.getElementById("btnStartSend");
+  if (startBtn) {
+    startBtn.disabled = !canSend;
+  }
 
   document.getElementById("emptyHint").style.display = hasFields ? "none" : "block";
   document.getElementById("rowCountBadge").textContent = `${state.rows ? state.rows.length : 0} Registros`;
